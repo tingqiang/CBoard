@@ -1,21 +1,54 @@
 package org.cboard.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.base.Charsets;
-import com.google.common.base.Functions;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.hash.Hashing;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.cboard.dao.*;
+import org.cboard.dao.BoardDao;
+import org.cboard.dao.CategoryDao;
+import org.cboard.dao.DatasetDao;
+import org.cboard.dao.DatasourceDao;
+import org.cboard.dao.FolderDao;
+import org.cboard.dao.JobDao;
+import org.cboard.dao.RoleDao;
+import org.cboard.dao.WidgetDao;
 import org.cboard.dataprovider.DataProviderManager;
 import org.cboard.dataprovider.DataProviderViewManager;
 import org.cboard.dataprovider.config.AggConfig;
 import org.cboard.dataprovider.result.AggregateResult;
-import org.cboard.dto.*;
-import org.cboard.pojo.*;
-import org.cboard.services.*;
+import org.cboard.dto.DataProviderResult;
+import org.cboard.dto.ViewAggConfig;
+import org.cboard.dto.ViewDashboardBoard;
+import org.cboard.dto.ViewDashboardDataset;
+import org.cboard.dto.ViewDashboardDatasource;
+import org.cboard.dto.ViewDashboardFolder;
+import org.cboard.dto.ViewDashboardJob;
+import org.cboard.dto.ViewDashboardWidget;
+import org.cboard.pojo.DashboardBoard;
+import org.cboard.pojo.DashboardBoardParam;
+import org.cboard.pojo.DashboardCategory;
+import org.cboard.pojo.DashboardDataset;
+import org.cboard.pojo.DashboardFolder;
+import org.cboard.pojo.DashboardRoleRes;
+import org.cboard.pojo.DashboardWidget;
+import org.cboard.services.BoardService;
+import org.cboard.services.CategoryService;
+import org.cboard.services.DataProviderService;
+import org.cboard.services.DatasetService;
+import org.cboard.services.DatasourceService;
+import org.cboard.services.FolderService;
+import org.cboard.services.RoleService;
+import org.cboard.services.ServiceStatus;
+import org.cboard.services.WidgetService;
 import org.cboard.services.job.JobService;
 import org.cboard.services.persist.excel.XlsProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +57,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Charsets;
+import com.google.common.base.Functions;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.hash.Hashing;
 
 /**
  * Created by yfyuan on 2016/8/9.
@@ -107,6 +145,10 @@ public class DashboardController extends BaseController {
         return datasourceService.getViewDatasourceList(() -> datasourceDao.getDatasourceList(user.getUserId()));
     }
 
+    /**
+     * 获取支持的数据源列表
+     * @return
+     */
     @RequestMapping(value = "/getProviderList")
     public Set<String> getProviderList() {
         return DataProviderManager.getProviderList();
@@ -333,6 +375,16 @@ public class DashboardController extends BaseController {
         return datasourceService.checkDatasource(user.getUserId(), id);
     }
 
+    /**
+     *  取维度列
+     * @param datasourceId
+     * @param query
+     * @param datasetId
+     * @param colmunName
+     * @param cfg
+     * @param reload
+     * @return
+     */
     @RequestMapping(value = "/getDimensionValues")
     public String[] getDimensionValues(@RequestParam(name = "datasourceId", required = false) Long datasourceId, @RequestParam(name = "query", required = false) String query, @RequestParam(name = "datasetId", required = false) Long datasetId, @RequestParam(name = "colmunName", required = true) String colmunName, @RequestParam(name = "cfg", required = false) String cfg, @RequestParam(name = "reload", required = false, defaultValue = "false") Boolean reload) {
         Map<String, String> strParams = null;

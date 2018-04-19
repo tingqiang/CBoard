@@ -1,5 +1,12 @@
 package org.cboard.dataprovider;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.cboard.dataprovider.aggregator.InnerAggregator;
 import org.cboard.dataprovider.aggregator.h2.H2Aggregator;
 import org.cboard.dataprovider.annotation.DatasourceParameter;
@@ -12,13 +19,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by yfyuan on 2016/8/15.
@@ -65,9 +65,9 @@ public class DataProviderManager implements ApplicationContextAware {
         ProviderName providerName = (ProviderName) c.getAnnotation(ProviderName.class);
         if (providerName.name().equals(type)) {
             DataProvider provider = (DataProvider) c.newInstance();
-            provider.setQuery(query);
-            provider.setDataSource(dataSource);
-            provider.setUsedForTest(isUseForTest);
+            provider.setQuery(query);//SQL语句
+            provider.setDataSource(dataSource);//数据源配置
+            provider.setUsedForTest(isUseForTest);//false
             if (provider instanceof Initializing) {
                 ((Initializing) provider).afterPropertiesSet();
             }

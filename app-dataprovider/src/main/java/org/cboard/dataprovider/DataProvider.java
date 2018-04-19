@@ -1,9 +1,15 @@
 package org.cboard.dataprovider;
 
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.base.Charsets;
-import com.google.common.hash.Hashing;
-import com.googlecode.aviator.AviatorEvaluator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.cboard.dataprovider.aggregator.Aggregatable;
 import org.cboard.dataprovider.aggregator.InnerAggregator;
 import org.cboard.dataprovider.config.AggConfig;
@@ -20,9 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Charsets;
+import com.google.common.hash.Hashing;
+import com.googlecode.aviator.AviatorEvaluator;
 
 /**
  * Created by zyong on 2017/1/9.
@@ -82,7 +89,7 @@ public abstract class DataProvider {
 
     /**
      * Get the options values of a dimension column
-     *
+     *取维度列名
      * @param columnName
      * @return
      */

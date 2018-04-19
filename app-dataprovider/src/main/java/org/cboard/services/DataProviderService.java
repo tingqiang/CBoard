@@ -1,9 +1,8 @@
 package org.cboard.services;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPath;
-import com.google.common.base.Functions;
-import com.google.common.collect.Maps;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import org.apache.commons.lang3.StringUtils;
 import org.cboard.dao.DatasetDao;
 import org.cboard.dao.DatasourceDao;
@@ -21,8 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
-import java.util.function.Consumer;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPath;
+import com.google.common.base.Functions;
+import com.google.common.collect.Maps;
 
 /**
  * Created by yfyuan on 2016/8/15.
@@ -44,7 +45,7 @@ public class DataProviderService {
             query = dataset.getQuery();
         }
         DashboardDatasource datasource = datasourceDao.getDatasource(datasourceId);
-        JSONObject datasourceConfig = JSONObject.parseObject(datasource.getConfig());
+        JSONObject datasourceConfig = JSONObject.parseObject(datasource.getConfig());//数据源配置
         Map<String, String> dataSource = Maps.transformValues(datasourceConfig, Functions.toStringFunction());
         DataProvider dataProvider = DataProviderManager.getDataProvider(datasource.getType(), dataSource, query);
         if (dataset != null && dataset.getInterval() != null && dataset.getInterval() > 0) {
@@ -53,6 +54,15 @@ public class DataProviderService {
         return dataProvider;
     }
 
+    /**
+     * 取数据
+     * @param datasourceId
+     * @param query
+     * @param datasetId
+     * @param config
+     * @param reload
+     * @return
+     */
     public AggregateResult queryAggData(Long datasourceId, Map<String, String> query, Long datasetId, AggConfig config, boolean reload) {
         try {
             Dataset dataset = getDataset(datasetId);
@@ -80,6 +90,16 @@ public class DataProviderService {
         return dps;
     }
 
+    /**
+     * 取维度列
+     * @param datasourceId
+     * @param query
+     * @param datasetId
+     * @param columnName
+     * @param config
+     * @param reload
+     * @return
+     */
     public String[] getDimensionValues(Long datasourceId, Map<String, String> query, Long datasetId, String columnName, AggConfig config, boolean reload) {
         try {
             Dataset dataset = getDataset(datasetId);
