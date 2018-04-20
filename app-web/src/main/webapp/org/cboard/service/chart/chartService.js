@@ -31,6 +31,7 @@ cBoard.service('chartService', function ($q, dataService, chartPieService, chart
         services.set('chinaMapBmap', chartChinaMapBmapService);
         services.set('relation', chartRelationService);
 
+        debugger
         this.renderChart = function (containerDom, widgetConfig, options) {
             var deferred = $q.defer();
             var optionFilter = _.get(options, 'optionFilter'),
@@ -39,7 +40,7 @@ cBoard.service('chartService', function ($q, dataService, chartPieService, chart
                 persist = _.get(options, 'persist'),
                 relations = _.get(options, 'relations');
             var chartServiceInstance = getChartServices(widgetConfig.config);
-            dataService.getDataSeries({
+            dataService.getDataSeries({//取数据
                 datasource: widgetConfig.datasource,
                 query: widgetConfig.query,
                 datasetId: widgetConfig.datasetId,
@@ -95,6 +96,7 @@ cBoard.service('chartService', function ($q, dataService, chartPieService, chart
                                     if (optionFilter) {
                                         optionFilter(option);
                                     }
+                                    debugger
                                     render(option, data.drill.config);
                                 });
                             });

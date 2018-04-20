@@ -139,19 +139,21 @@ cBoard.service('dataService', function ($http, $q, updateService) {
                 cfg.filters = getDimensionConfig(chartConfig.filters);
             }
 
-            $http.post("dashboard/getDimensionValues.do", {
+            $http.post("dashboard/getDimensionValues.do", {//取维度列
+            	
                 datasourceId: datasource,
                 query: angular.toJson(query),
                 datasetId: datasetId,
                 colmunName: colmunName,
                 cfg: angular.toJson(cfg),
             }).success(function (response) {
+            	console.log('取维度列back->'+callback);
                 callback(response);
             });
         });
     };
 
-    this.getDataSeries = function (args) {
+    this.getDataSeries = function (args) {//取数据
         var defer = $q.defer();
         var datasource = args.datasource,
             query = args.query,

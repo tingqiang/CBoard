@@ -20,7 +20,7 @@ angular.module('cBoard').config(['$stateProvider', function ($stateProvider) {
             abstract: true,
             template: '<div ui-view></div>'
         })
-        .state('mine.view', {
+        .state('mine.view', {//看板
             url: '/{id}',
             params: {id: null},
             templateUrl: 'org/cboard/view/dashboard/view.html',

@@ -85,7 +85,9 @@ cBoard.controller('dashboardViewCtrl', function ($timeout, $rootScope, $scope, $
     });
 
     var buildRender = function (widget, reload) {
+    	
         var widgetConfig = injectFilter(widget.widget).data;
+        
         widget.render = function (container, optionFilter, scope) {
             // 百度地图特殊处理
             var charType = injectFilter(widget.widget).data.config.chart_type;

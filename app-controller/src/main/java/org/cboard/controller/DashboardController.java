@@ -411,6 +411,15 @@ public class DashboardController extends BaseController {
         return dataProviderService.getColumns(datasourceId, strParams, datasetId, reload);
     }
 
+    /**
+     * 取数据
+     * @param datasourceId
+     * @param query
+     * @param datasetId
+     * @param cfg
+     * @param reload
+     * @return
+     */
     @RequestMapping(value = "/getAggregateData")
     public AggregateResult getAggregateData(@RequestParam(name = "datasourceId", required = false) Long datasourceId,
                                             @RequestParam(name = "query", required = false) String query,

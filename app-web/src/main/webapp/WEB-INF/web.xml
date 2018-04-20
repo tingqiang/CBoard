@@ -81,6 +81,19 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+<filter>
+        <filter-name>CrossOriginControl</filter-name>
+        <filter-class>org.cboard.filter.CrossOriginControl</filter-class>
+        <init-param>
+            <param-name>IsCross</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CrossOriginControl</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <listener>
         <description>spring listener</description>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
